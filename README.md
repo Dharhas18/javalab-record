@@ -1,19 +1,10 @@
-# Java Programming Record — K. Dharhas
+# Java Programming Lab Record
 
-Student: K. Dharhas  
-Roll Number: 25EU02082  
-Faculty: Ramesh  
-Course Code: 24CS281
+A simple Java lab record website with PDF open/download links, search, and dark/light mode.
 
-## Run locally
-Open `index.html` in a browser. Keep the `pdfs/` folder beside it.
+## Files
+- `index.html` — website homepage
+- `week-01.pdf` through `week-12.pdf` — weekly lab records
 
-## Publish using GitHub Pages
-1. Create a new GitHub repository.
-2. Upload `index.html`, the `pdfs/` folder, and this README (extract the ZIP first).
-3. Open **Settings → Pages** in the repository.
-4. Under **Build and deployment**, choose **Deploy from a branch**.
-5. Select branch **main** and folder **/(root)**, then save.
-6. Wait for GitHub Pages to publish, then share the website URL.
-
-All PDF links are relative paths, so the website and PDFs work together when published.
+## GitHub Pages
+Upload `index.html` and all PDF files to the repository root (the same folder as this README). Enable GitHub Pages from the `main` branch and root folder. The links in `index.html` are set up for this layout.
