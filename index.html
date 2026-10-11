@@ -34,6 +34,34 @@
       background: var(--white);
       border-bottom: 1px solid var(--line);
     }
+    .top-actions { display:flex; align-items:center; gap:10px; }
+    .theme-toggle {
+      border:1px solid var(--line); background:var(--sky); color:var(--ink);
+      padding:9px 12px; border-radius:8px; font-weight:700; cursor:pointer;
+    }
+    .search-wrap { display:flex; align-items:center; gap:10px; margin:22px 0 16px; }
+    .search-input {
+      flex:1; min-width:0; padding:13px 15px; border:1px solid var(--line);
+      border-radius:10px; background:var(--white); color:var(--ink); font:inherit;
+      outline:none;
+    }
+    .search-input:focus { border-color:var(--blue); box-shadow:0 0 0 3px #3B6EA822; }
+    .search-count { color:var(--muted); font-size:.85rem; white-space:nowrap; }
+    .empty-state {
+      display:none; text-align:center; padding:28px 16px; border:1px dashed var(--line);
+      border-radius:12px; background:var(--white); color:var(--muted);
+    }
+    body.dark {
+      --navy:#e6edf6; --blue:#7da9dc; --blue-dark:#a9c8ef; --sky:#253447;
+      --paper:#111827; --white:#1b2636; --ink:#e5edf7; --muted:#a9b7c9; --line:#334155;
+    }
+    body.dark .hero { background:#243b53; }
+    body.dark .pdf-icon { background:#392a31; color:#ffb8b8; border-color:#63404a; }
+    body.dark .note { background:#253447; color:#dce8f6; }
+    body.dark .open-btn { color:#102033; background:#a9c8ef; }
+    body.dark .open-btn:hover { background:#c4daf5; }
+    body.dark .theme-toggle { background:#253447; color:#e5edf7; }
+    body.dark .top-tag { background:#253447; color:#dce8f6; border-color:#334155; }
     .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; }
     .brand-mark {
       display: grid; place-items: center; width: 38px; height: 38px;
@@ -89,7 +117,10 @@
     .note { margin-top: 20px; padding: 15px 17px; border-radius: 10px; background: var(--sky); border: 1px solid var(--line); color: var(--navy); line-height: 1.6; }
     footer { text-align: center; color: var(--muted); padding: 24px 15px 35px; font-size: .85rem; }
     @media (max-width: 700px) {
-      .topbar { padding: 14px 5%; }
+      .topbar { padding: 14px 5%; flex-wrap:wrap; }
+      .top-actions { width:100%; justify-content:space-between; }
+      .search-wrap { flex-wrap:wrap; }
+      .search-count { width:100%; }
       .container { padding: 0 14px 32px; margin-top: 18px; }
       .student-details { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .section-head { align-items: start; flex-direction: column; }
@@ -103,7 +134,10 @@
 <body>
   <header class="topbar">
     <div class="brand"><span class="brand-mark">J</span><span>Java Programming Record</span></div>
-    <span class="top-tag">Course 24CS281</span>
+    <div class="top-actions">
+      <span class="top-tag">Course 24CS281</span>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to dark mode">🌙 Dark mode</button>
+    </div>
   </header>
   <main class="container">
     <section class="hero">
@@ -122,7 +156,11 @@
         <div><h2 id="pdf-heading">Weekly PDF Records</h2><p>Choose a record below to open it.</p></div>
         <span class="count">12 PDFs included</span>
       </div>
-      <div class="pdf-list">
+      <div class="search-wrap">
+        <input id="pdfSearch" class="search-input" type="search" placeholder="Search by week or topic (e.g. strings, exceptions)..." aria-label="Search weekly PDF records">
+        <span class="search-count" id="searchCount">12 records</span>
+      </div>
+      <div class="pdf-list" id="pdfList">
       <article class="pdf-card">
         <div class="pdf-icon" aria-hidden="true">PDF</div>
         <div class="pdf-info">
@@ -232,9 +270,35 @@
         <a class="download-link" href="pdfs/week-12.pdf" download>Download PDF</a>
       </article>
       </div>
+      <div class="empty-state" id="emptyState">No matching PDF records. Try a different search term.</div>
       <div class="note"><strong>Note for faculty:</strong> Each “Open PDF” link opens the selected record in a new browser tab. Keep the <code>pdfs</code> folder with this page when uploading the website to GitHub.</div>
     </section>
   </main>
   <footer>Prepared by K. Dharhas · Java Programming · 24CS281</footer>
+  <script>
+    const themeToggle = document.getElementById('themeToggle');
+    const pdfSearch = document.getElementById('pdfSearch');
+    const pdfCards = Array.from(document.querySelectorAll('.pdf-card'));
+    const searchCount = document.getElementById('searchCount');
+    const emptyState = document.getElementById('emptyState');
+
+    themeToggle.addEventListener('click', () => {
+      const isDark = document.body.classList.toggle('dark');
+      themeToggle.textContent = isDark ? '☀️ Light mode' : '🌙 Dark mode';
+      themeToggle.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+    });
+
+    pdfSearch.addEventListener('input', () => {
+      const query = pdfSearch.value.trim().toLowerCase();
+      let visible = 0;
+      pdfCards.forEach(card => {
+        const matches = card.textContent.toLowerCase().includes(query);
+        card.style.display = matches ? '' : 'none';
+        if (matches) visible++;
+      });
+      searchCount.textContent = `${visible} of ${pdfCards.length} records`;
+      emptyState.style.display = visible === 0 ? 'block' : 'none';
+    });
+  </script>
 </body>
 </html>
